@@ -1,0 +1,5 @@
+include onekey_deploy_ctl
+include onekey_deploy/onekey_deploy.service
+include onekey_deploy/onekey_deploy
+recursive-include onekey_deploy/conf *
+recursive-include onekey_deploy/utils_bin/bin *
