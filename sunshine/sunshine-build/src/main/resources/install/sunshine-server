@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# the following is chkconfig init header
+#
+# sunshine-server:  sunshine server daemon
+#
+# chkconfig: 345 97 03
+# description:  This is a daemon instructed by sunshine management server \
+#               to perform sunshine related operations\
+#               sunshine server was launched by apache-tomcat
+#               See http://sunshine.org
+#
+# processname: /usr/bin/java org.apache.catalina.startup.Bootstrap start
+# pidfile: /var/run/sunshine/sunshineserver.pid
+#
+
+pidfile='/var/run/sunshine/sunshine-server.pid'
+TOMCAT_PATH="/usr/local/sunshine/root/apache-tomcat"
+sunshine_app=${SUNSHINE_HOME-"$TOMCAT_PATH/webapps/sunshine"}
+
+which sunshine-ctl &>/dev/null
+if [ $? -ne 0 ]; then
+    echo "Does not find sunshine-ctl. Can not execute sunshine-server service."
+    exit 1
+fi
+
+check_status() {
+    SUNSHINE_HOME=$sunshine_app HOME=`echo ~root` sunshine-ctl status
+}
+
+stop_sunshine(){
+    SUNSHINE_HOME=$sunshine_app HOME=`echo ~root` sunshine-ctl stop
+}
+
+start_sunshine(){
+    SUNSHINE_HOME=$sunshine_app HOME=`echo ~root` sunshine-ctl start
+}
+
+
+if [ $# -eq 0 ]; then
+    echo "usage: $0
+[start|stop|restart|status]"
+    exit 1
+fi
+
+if [ "$@" = "status" ]; then
+    check_status
+elif [ "$@" = "start" ]; then
+    start_sunshine
+elif [ "$@" = "stop" ]; then
+    stop_sunshine
+elif [ "$@" = "restart" ]; then
+    stop_sunshine
+    start_sunshine
+else
+    echo "Not support service: $@. Please use [start|stop|restart|status]"
+    exit 1
+fi
+
+if [ $? -eq 0 ]; then
+    echo "$@ sunshine service .... SUCCESS"
+    exit 0
+else
+    echo "$@ sunshine service .... FAILED"
+    exit 1
+fi
