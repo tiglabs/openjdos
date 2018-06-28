@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug">
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="/export/logs/sunshine.log"
+                     filePattern="/export/logs/sunshine-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c{1}] %X{api,} %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="450 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingFile>
+
+        <Async name="Async" ignoreExceptions="false" bufferSize="512">
+            <AppenderRef ref="RollingFile"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="com.jd.jdos.sunshine" level="debug"/>
+
+        <Logger name="org.springframework" level="warn"/>
+
+        <Root level="warn" additivity="false">
+            <AppenderRef ref="Async"/>
+        </Root>
+    </Loggers>
+</Configuration>
