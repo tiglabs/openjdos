@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# chkconfig: - 99 92
+# description: onekey_deploy
+#
+if [ -f /etc/init.d/functions ];then
+	. /etc/init.d/functions
+fi
+if [ -f  /etc/rc.d/init.d/functions ];then
+       . /etc/rc.d/init.d/functions
+fi
+
+start () {
+       python /usr/lib/python2.7/site-packages/onekey_deploy/service.py
+}
+
+
+stop () {
+
+    for onekey_deploypid in `ps ax | grep onekey_deploy | grep -v grep | sed -e 's/ *//' -e 's/ .*//'`
+        do
+        kill $onekey_deploypid
+        done
+
+}
+
+
+status () {
+    echo "1111"
+}
+
+export ANSIBLE_HOST_KEY_CHECKING=False
+case "$1" in
+    start)
+        start
+        exit $?
+        ;;
+
+    stop)
+        stop
+        exit $?
+        ;;
+
+    status)
+        status
+        exit $?
+        ;;
+
+    restart)
+        stop
+        #fvirt
+        start
+        exit $?
+        ;;
+    *)
+        echo "Unknown command: $command" >&2
+        echo 'Valid commands are: start, stop' >&2
+        exit 1
+esac
+
+
+

@@ -1,0 +1,16 @@
+[Unit]
+Description=onekey_deploy for k8s cluster
+ConditionFileIsExecutable=python /usr/lib/python2.7/site-packages/onekey_deploy/service.py
+After=multi-user.target
+
+[Service]
+Environment=ANSIBLE_HOST_KEY_CHECKING=False
+Type=forking
+ExecStart=/etc/init.d/onekey_deploy start
+ExecStop=/etc/init.d/onekey_deploy stop
+KillMode=none
+TimeoutSec=0
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
